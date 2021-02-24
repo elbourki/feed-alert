@@ -1,0 +1,20 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-feedalert-prod-131436-authRole",
+      "UnauthRoleArn": "arn:aws:iam::869615265504:role/amplify-feedalert-prod-131436-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::869615265504:role/amplify-feedalert-prod-131436-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-feedalert-prod-131436-deployment",
+      "UnauthRoleName": "amplify-feedalert-prod-131436-unauthRole",
+      "StackName": "amplify-feedalert-prod-131436",
+      "StackId": "arn:aws:cloudformation:us-east-2:869615265504:stack/amplify-feedalert-prod-131436/0b302ca0-72ac-11eb-b691-069c988534ce",
+      "AmplifyAppId": "dtaoajl7m5zjq"
+    },
+    "categories": {
+      "auth": {
+        "cognito": {}
+      }
+    }
+  }
+}

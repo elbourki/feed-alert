@@ -1,0 +1,30 @@
+type Feed @model @auth(rules: [{ allow: private, operations: [read] }]) {
+  id: ID!
+  name: String!
+  link: AWSURL!
+  fetchedAt: AWSDateTime!
+  items: [Item] @connection(keyName: "byItem", fields: ["id"])
+}
+
+type Item
+  @model
+  @key(name: "byItem", fields: ["feedID", "guid", "publishedAt"])
+  @auth(rules: [{ allow: private, operations: [read] }]) {
+  id: ID!
+  feedID: ID!
+  guid: String!
+  title: String!
+  link: AWSURL!
+  html: String!
+  categories: AWSJSON!
+  publishedAt: AWSDateTime!
+  feed: Feed @connection(fields: ["feedID"])
+}
+
+type UserFeed @model @auth(rules: [{ allow: owner }]) {
+  id: ID!
+  feedID: ID!
+  feed: Feed @connection(fields: ["feedID"])
+  lastReadItemID: ID
+  lastReadItem: Item @connection(fields: ["lastReadItemID"])
+}
