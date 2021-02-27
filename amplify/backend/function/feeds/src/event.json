@@ -1,0 +1,8 @@
+{
+  "path": "/feeds/validate",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{ \"link\": \"https://townhall.hashnode.com/rss.xml\" }"
+}

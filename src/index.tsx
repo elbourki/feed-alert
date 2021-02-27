@@ -10,13 +10,10 @@ import Amplify from "aws-amplify";
 import awsconfig from "./aws-exports";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import customTheme from "./theme";
-
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 Amplify.configure(awsconfig);
-
 firebase.initializeApp(config.firebase);
-
 serviceWorkerRegistration.register();
 
 ReactDOM.render(

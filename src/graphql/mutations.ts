@@ -2,24 +2,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createFeed = /* GraphQL */ `
-  mutation CreateFeed(
-    $input: CreateFeedInput!
-    $condition: ModelFeedConditionInput
-  ) {
-    createFeed(input: $input, condition: $condition) {
-      id
-      name
-      link
-      fetchedAt
-      items {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const updateFeed = /* GraphQL */ `
   mutation UpdateFeed(
     $input: UpdateFeedInput!
@@ -29,12 +11,24 @@ export const updateFeed = /* GraphQL */ `
       id
       name
       link
-      fetchedAt
-      items {
-        nextToken
-      }
+      featured
       createdAt
       updatedAt
+      items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -47,39 +41,24 @@ export const deleteFeed = /* GraphQL */ `
       id
       name
       link
-      fetchedAt
+      featured
+      createdAt
+      updatedAt
       items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
         nextToken
       }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createItem = /* GraphQL */ `
-  mutation CreateItem(
-    $input: CreateItemInput!
-    $condition: ModelItemConditionInput
-  ) {
-    createItem(input: $input, condition: $condition) {
-      id
-      feedID
-      guid
-      title
-      link
-      html
-      categories
-      publishedAt
-      feed {
-        id
-        name
-        link
-        fetchedAt
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -97,16 +76,19 @@ export const updateItem = /* GraphQL */ `
       html
       categories
       publishedAt
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -124,16 +106,79 @@ export const deleteItem = /* GraphQL */ `
       html
       categories
       publishedAt
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
+    }
+  }
+`;
+export const createFeed = /* GraphQL */ `
+  mutation CreateFeed(
+    $input: CreateFeedInput!
+    $condition: ModelFeedConditionInput
+  ) {
+    createFeed(input: $input, condition: $condition) {
+      id
+      name
+      link
+      featured
       createdAt
       updatedAt
+      items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const createItem = /* GraphQL */ `
+  mutation CreateItem(
+    $input: CreateItemInput!
+    $condition: ModelItemConditionInput
+  ) {
+    createItem(input: $input, condition: $condition) {
+      id
+      feedID
+      guid
+      title
+      link
+      html
+      categories
+      publishedAt
+      createdAt
+      updatedAt
+      feed {
+        id
+        name
+        link
+        featured
+        createdAt
+        updatedAt
+        items {
+          nextToken
+        }
+      }
     }
   }
 `;
@@ -145,15 +190,21 @@ export const createUserFeed = /* GraphQL */ `
     createUserFeed(input: $input, condition: $condition) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -165,9 +216,15 @@ export const createUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }
@@ -180,15 +237,21 @@ export const updateUserFeed = /* GraphQL */ `
     updateUserFeed(input: $input, condition: $condition) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -200,9 +263,15 @@ export const updateUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }
@@ -215,15 +284,21 @@ export const deleteUserFeed = /* GraphQL */ `
     deleteUserFeed(input: $input, condition: $condition) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -235,9 +310,15 @@ export const deleteUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }

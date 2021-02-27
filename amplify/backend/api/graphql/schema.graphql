@@ -1,30 +1,45 @@
-type Feed @model @auth(rules: [{ allow: private, operations: [read] }]) {
+type Feed
+  @model
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read] }
+      { allow: private, provider: iam, operations: [read, create] }
+    ]
+  ) {
   id: ID!
   name: String!
   link: AWSURL!
-  fetchedAt: AWSDateTime!
   items: [Item] @connection(keyName: "byItem", fields: ["id"])
+  featured: Boolean!
 }
 
 type Item
   @model
   @key(name: "byItem", fields: ["feedID", "guid", "publishedAt"])
-  @auth(rules: [{ allow: private, operations: [read] }]) {
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read] }
+      { allow: private, provider: iam, operations: [read, create] }
+    ]
+  ) {
   id: ID!
   feedID: ID!
+  feed: Feed @connection(fields: ["feedID"])
   guid: String!
   title: String!
   link: AWSURL!
   html: String!
   categories: AWSJSON!
   publishedAt: AWSDateTime!
-  feed: Feed @connection(fields: ["feedID"])
 }
 
 type UserFeed @model @auth(rules: [{ allow: owner }]) {
   id: ID!
   feedID: ID!
   feed: Feed @connection(fields: ["feedID"])
+  name: String
   lastReadItemID: ID
   lastReadItem: Item @connection(fields: ["lastReadItemID"])
 }

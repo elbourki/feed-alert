@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "cognito": {}
+      },
+      "function": {
+        "feeds": {
+          "deploymentBucketName": "amplify-feedalert-prod-131436-deployment",
+          "s3Key": "amplify-builds/feeds-614a526472586958482f-build.zip"
+        }
       }
     }
   }

@@ -1,0 +1,36 @@
+{
+    "paths": [
+        {
+            "name": "/feeds",
+            "lambdaFunction": "feeds",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/feeds"
+        }
+    ],
+    "resourceName": "rest",
+    "apiName": "rest",
+    "functionArns": [
+        {
+            "lambdaFunction": "feeds"
+        }
+    ],
+    "privacy": {
+        "auth": 0,
+        "unauth": 0,
+        "authRoleName": "amplify-feedalert-prod-131436-authRole",
+        "unAuthRoleName": "amplify-feedalert-prod-131436-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "feeds",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "527c2378"
+}

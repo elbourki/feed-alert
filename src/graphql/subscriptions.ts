@@ -8,12 +8,24 @@ export const onCreateFeed = /* GraphQL */ `
       id
       name
       link
-      fetchedAt
-      items {
-        nextToken
-      }
+      featured
       createdAt
       updatedAt
+      items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -23,12 +35,24 @@ export const onUpdateFeed = /* GraphQL */ `
       id
       name
       link
-      fetchedAt
-      items {
-        nextToken
-      }
+      featured
       createdAt
       updatedAt
+      items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -38,12 +62,24 @@ export const onDeleteFeed = /* GraphQL */ `
       id
       name
       link
-      fetchedAt
-      items {
-        nextToken
-      }
+      featured
       createdAt
       updatedAt
+      items {
+        items {
+          id
+          feedID
+          guid
+          title
+          link
+          html
+          categories
+          publishedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -58,16 +94,19 @@ export const onCreateItem = /* GraphQL */ `
       html
       categories
       publishedAt
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -82,16 +121,19 @@ export const onUpdateItem = /* GraphQL */ `
       html
       categories
       publishedAt
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -106,33 +148,42 @@ export const onDeleteItem = /* GraphQL */ `
       html
       categories
       publishedAt
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
 export const onCreateUserFeed = /* GraphQL */ `
-  subscription OnCreateUserFeed($owner: String!) {
+  subscription OnCreateUserFeed($owner: String) {
     onCreateUserFeed(owner: $owner) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -144,27 +195,39 @@ export const onCreateUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }
 `;
 export const onUpdateUserFeed = /* GraphQL */ `
-  subscription OnUpdateUserFeed($owner: String!) {
+  subscription OnUpdateUserFeed($owner: String) {
     onUpdateUserFeed(owner: $owner) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -176,27 +239,39 @@ export const onUpdateUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }
 `;
 export const onDeleteUserFeed = /* GraphQL */ `
-  subscription OnDeleteUserFeed($owner: String!) {
+  subscription OnDeleteUserFeed($owner: String) {
     onDeleteUserFeed(owner: $owner) {
       id
       feedID
+      name
+      lastReadItemID
+      createdAt
+      updatedAt
       feed {
         id
         name
         link
-        fetchedAt
+        featured
         createdAt
         updatedAt
+        items {
+          nextToken
+        }
       }
-      lastReadItemID
       lastReadItem {
         id
         feedID
@@ -208,9 +283,15 @@ export const onDeleteUserFeed = /* GraphQL */ `
         publishedAt
         createdAt
         updatedAt
+        feed {
+          id
+          name
+          link
+          featured
+          createdAt
+          updatedAt
+        }
       }
-      createdAt
-      updatedAt
       owner
     }
   }

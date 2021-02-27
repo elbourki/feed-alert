@@ -2,17 +2,17 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateFeedInput = {
-  id?: string | null,
-  name: string,
-  link: string,
-  fetchedAt: string,
+export type UpdateFeedInput = {
+  id: string,
+  name?: string | null,
+  link?: string | null,
+  featured?: boolean | null,
 };
 
 export type ModelFeedConditionInput = {
   name?: ModelStringInput | null,
   link?: ModelStringInput | null,
-  fetchedAt?: ModelStringInput | null,
+  featured?: ModelBooleanInput | null,
   and?: Array< ModelFeedConditionInput | null > | null,
   or?: Array< ModelFeedConditionInput | null > | null,
   not?: ModelFeedConditionInput | null,
@@ -58,15 +58,22 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type Feed = {
   __typename: "Feed",
   id?: string,
   name?: string,
   link?: string,
-  fetchedAt?: string,
-  items?: ModelItemConnection,
+  featured?: boolean,
   createdAt?: string,
   updatedAt?: string,
+  items?: ModelItemConnection,
 };
 
 export type ModelItemConnection = {
@@ -85,31 +92,24 @@ export type Item = {
   html?: string,
   categories?: string,
   publishedAt?: string,
-  feed?: Feed,
   createdAt?: string,
   updatedAt?: string,
-};
-
-export type UpdateFeedInput = {
-  id: string,
-  name?: string | null,
-  link?: string | null,
-  fetchedAt?: string | null,
+  feed?: Feed,
 };
 
 export type DeleteFeedInput = {
   id?: string | null,
 };
 
-export type CreateItemInput = {
-  id?: string | null,
-  feedID: string,
-  guid: string,
-  title: string,
-  link: string,
-  html: string,
-  categories: string,
-  publishedAt: string,
+export type UpdateItemInput = {
+  id: string,
+  feedID?: string | null,
+  guid?: string | null,
+  title?: string | null,
+  link?: string | null,
+  html?: string | null,
+  categories?: string | null,
+  publishedAt?: string | null,
 };
 
 export type ModelItemConditionInput = {
@@ -141,29 +141,38 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
-export type UpdateItemInput = {
-  id: string,
-  feedID?: string | null,
-  guid?: string | null,
-  title?: string | null,
-  link?: string | null,
-  html?: string | null,
-  categories?: string | null,
-  publishedAt?: string | null,
-};
-
 export type DeleteItemInput = {
   id?: string | null,
+};
+
+export type CreateFeedInput = {
+  id?: string | null,
+  name: string,
+  link: string,
+  featured: boolean,
+};
+
+export type CreateItemInput = {
+  id?: string | null,
+  feedID: string,
+  guid: string,
+  title: string,
+  link: string,
+  html: string,
+  categories: string,
+  publishedAt: string,
 };
 
 export type CreateUserFeedInput = {
   id?: string | null,
   feedID: string,
+  name?: string | null,
   lastReadItemID?: string | null,
 };
 
 export type ModelUserFeedConditionInput = {
   feedID?: ModelIDInput | null,
+  name?: ModelStringInput | null,
   lastReadItemID?: ModelIDInput | null,
   and?: Array< ModelUserFeedConditionInput | null > | null,
   or?: Array< ModelUserFeedConditionInput | null > | null,
@@ -174,17 +183,19 @@ export type UserFeed = {
   __typename: "UserFeed",
   id?: string,
   feedID?: string,
-  feed?: Feed,
+  name?: string | null,
   lastReadItemID?: string | null,
-  lastReadItem?: Item,
   createdAt?: string,
   updatedAt?: string,
+  feed?: Feed,
+  lastReadItem?: Item,
   owner?: string | null,
 };
 
 export type UpdateUserFeedInput = {
   id: string,
   feedID?: string | null,
+  name?: string | null,
   lastReadItemID?: string | null,
 };
 
@@ -196,7 +207,7 @@ export type ModelFeedFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   link?: ModelStringInput | null,
-  fetchedAt?: ModelStringInput | null,
+  featured?: ModelBooleanInput | null,
   and?: Array< ModelFeedFilterInput | null > | null,
   or?: Array< ModelFeedFilterInput | null > | null,
   not?: ModelFeedFilterInput | null,
@@ -225,6 +236,7 @@ export type ModelItemFilterInput = {
 export type ModelUserFeedFilterInput = {
   id?: ModelIDInput | null,
   feedID?: ModelIDInput | null,
+  name?: ModelStringInput | null,
   lastReadItemID?: ModelIDInput | null,
   and?: Array< ModelUserFeedFilterInput | null > | null,
   or?: Array< ModelUserFeedFilterInput | null > | null,
@@ -235,27 +247,6 @@ export type ModelUserFeedConnection = {
   __typename: "ModelUserFeedConnection",
   items?:  Array<UserFeed | null > | null,
   nextToken?: string | null,
-};
-
-export type CreateFeedMutationVariables = {
-  input?: CreateFeedInput,
-  condition?: ModelFeedConditionInput | null,
-};
-
-export type CreateFeedMutation = {
-  createFeed?:  {
-    __typename: "Feed",
-    id: string,
-    name: string,
-    link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
 };
 
 export type UpdateFeedMutationVariables = {
@@ -269,13 +260,26 @@ export type UpdateFeedMutation = {
     id: string,
     name: string,
     link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -290,43 +294,26 @@ export type DeleteFeedMutation = {
     id: string,
     name: string,
     link: string,
-    fetchedAt: string,
+    featured: boolean,
+    createdAt: string,
+    updatedAt: string,
     items?:  {
       __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
       nextToken?: string | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
-  } | null,
-};
-
-export type CreateItemMutationVariables = {
-  input?: CreateItemInput,
-  condition?: ModelItemConditionInput | null,
-};
-
-export type CreateItemMutation = {
-  createItem?:  {
-    __typename: "Item",
-    id: string,
-    feedID: string,
-    guid: string,
-    title: string,
-    link: string,
-    html: string,
-    categories: string,
-    publishedAt: string,
-    feed?:  {
-      __typename: "Feed",
-      id: string,
-      name: string,
-      link: string,
-      fetchedAt: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -346,17 +333,21 @@ export type UpdateItemMutation = {
     html: string,
     categories: string,
     publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -376,17 +367,89 @@ export type DeleteItemMutation = {
     html: string,
     categories: string,
     publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
+  } | null,
+};
+
+export type CreateFeedMutationVariables = {
+  input?: CreateFeedInput,
+  condition?: ModelFeedConditionInput | null,
+};
+
+export type CreateFeedMutation = {
+  createFeed?:  {
+    __typename: "Feed",
+    id: string,
+    name: string,
+    link: string,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
+  } | null,
+};
+
+export type CreateItemMutationVariables = {
+  input?: CreateItemInput,
+  condition?: ModelItemConditionInput | null,
+};
+
+export type CreateItemMutation = {
+  createItem?:  {
+    __typename: "Item",
+    id: string,
+    feedID: string,
+    guid: string,
+    title: string,
+    link: string,
+    html: string,
+    categories: string,
+    publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
+    feed?:  {
+      __typename: "Feed",
+      id: string,
+      name: string,
+      link: string,
+      featured: boolean,
+      createdAt: string,
+      updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
+    } | null,
   } | null,
 };
 
@@ -400,16 +463,23 @@ export type CreateUserFeedMutation = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -422,9 +492,16 @@ export type CreateUserFeedMutation = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
@@ -439,16 +516,23 @@ export type UpdateUserFeedMutation = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -461,9 +545,16 @@ export type UpdateUserFeedMutation = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
@@ -478,16 +569,23 @@ export type DeleteUserFeedMutation = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -500,30 +598,17 @@ export type DeleteUserFeedMutation = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
-  } | null,
-};
-
-export type GetFeedQueryVariables = {
-  id?: string,
-};
-
-export type GetFeedQuery = {
-  getFeed?:  {
-    __typename: "Feed",
-    id: string,
-    name: string,
-    link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -541,40 +626,48 @@ export type ListFeedsQuery = {
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null > | null,
     nextToken?: string | null,
   } | null,
 };
 
-export type GetItemQueryVariables = {
+export type GetFeedQueryVariables = {
   id?: string,
 };
 
-export type GetItemQuery = {
-  getItem?:  {
-    __typename: "Item",
+export type GetFeedQuery = {
+  getFeed?:  {
+    __typename: "Feed",
     id: string,
-    feedID: string,
-    guid: string,
-    title: string,
+    name: string,
     link: string,
-    html: string,
-    categories: string,
-    publishedAt: string,
-    feed?:  {
-      __typename: "Feed",
-      id: string,
-      name: string,
-      link: string,
-      fetchedAt: string,
-      createdAt: string,
-      updatedAt: string,
-    } | null,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -599,8 +692,50 @@ export type ListItemsQuery = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null > | null,
     nextToken?: string | null,
+  } | null,
+};
+
+export type GetItemQueryVariables = {
+  id?: string,
+};
+
+export type GetItemQuery = {
+  getItem?:  {
+    __typename: "Item",
+    id: string,
+    feedID: string,
+    guid: string,
+    title: string,
+    link: string,
+    html: string,
+    categories: string,
+    publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
+    feed?:  {
+      __typename: "Feed",
+      id: string,
+      name: string,
+      link: string,
+      featured: boolean,
+      createdAt: string,
+      updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
+    } | null,
   } | null,
 };
 
@@ -613,16 +748,23 @@ export type GetUserFeedQuery = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -635,9 +777,16 @@ export type GetUserFeedQuery = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
@@ -655,9 +804,32 @@ export type ListUserFeedsQuery = {
       __typename: "UserFeed",
       id: string,
       feedID: string,
+      name?: string | null,
       lastReadItemID?: string | null,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+      lastReadItem?:  {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
       owner?: string | null,
     } | null > | null,
     nextToken?: string | null,
@@ -670,13 +842,26 @@ export type OnCreateFeedSubscription = {
     id: string,
     name: string,
     link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -686,13 +871,26 @@ export type OnUpdateFeedSubscription = {
     id: string,
     name: string,
     link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -702,13 +900,26 @@ export type OnDeleteFeedSubscription = {
     id: string,
     name: string,
     link: string,
-    fetchedAt: string,
-    items?:  {
-      __typename: "ModelItemConnection",
-      nextToken?: string | null,
-    } | null,
+    featured: boolean,
     createdAt: string,
     updatedAt: string,
+    items?:  {
+      __typename: "ModelItemConnection",
+      items?:  Array< {
+        __typename: "Item",
+        id: string,
+        feedID: string,
+        guid: string,
+        title: string,
+        link: string,
+        html: string,
+        categories: string,
+        publishedAt: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null > | null,
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -723,17 +934,21 @@ export type OnCreateItemSubscription = {
     html: string,
     categories: string,
     publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -748,17 +963,21 @@ export type OnUpdateItemSubscription = {
     html: string,
     categories: string,
     publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
@@ -773,22 +992,26 @@ export type OnDeleteItemSubscription = {
     html: string,
     categories: string,
     publishedAt: string,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
   } | null,
 };
 
 export type OnCreateUserFeedSubscriptionVariables = {
-  owner?: string,
+  owner?: string | null,
 };
 
 export type OnCreateUserFeedSubscription = {
@@ -796,16 +1019,23 @@ export type OnCreateUserFeedSubscription = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -818,15 +1048,22 @@ export type OnCreateUserFeedSubscription = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
 export type OnUpdateUserFeedSubscriptionVariables = {
-  owner?: string,
+  owner?: string | null,
 };
 
 export type OnUpdateUserFeedSubscription = {
@@ -834,16 +1071,23 @@ export type OnUpdateUserFeedSubscription = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -856,15 +1100,22 @@ export type OnUpdateUserFeedSubscription = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
 
 export type OnDeleteUserFeedSubscriptionVariables = {
-  owner?: string,
+  owner?: string | null,
 };
 
 export type OnDeleteUserFeedSubscription = {
@@ -872,16 +1123,23 @@ export type OnDeleteUserFeedSubscription = {
     __typename: "UserFeed",
     id: string,
     feedID: string,
+    name?: string | null,
+    lastReadItemID?: string | null,
+    createdAt: string,
+    updatedAt: string,
     feed?:  {
       __typename: "Feed",
       id: string,
       name: string,
       link: string,
-      fetchedAt: string,
+      featured: boolean,
       createdAt: string,
       updatedAt: string,
+      items?:  {
+        __typename: "ModelItemConnection",
+        nextToken?: string | null,
+      } | null,
     } | null,
-    lastReadItemID?: string | null,
     lastReadItem?:  {
       __typename: "Item",
       id: string,
@@ -894,9 +1152,16 @@ export type OnDeleteUserFeedSubscription = {
       publishedAt: string,
       createdAt: string,
       updatedAt: string,
+      feed?:  {
+        __typename: "Feed",
+        id: string,
+        name: string,
+        link: string,
+        featured: boolean,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
     } | null,
-    createdAt: string,
-    updatedAt: string,
     owner?: string | null,
   } | null,
 };
