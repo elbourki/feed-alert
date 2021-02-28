@@ -1,8 +1,8 @@
 /* Amplify Params - DO NOT EDIT
-	API_GRAPHQL_GRAPHQLAPIENDPOINTOUTPUT
-	API_GRAPHQL_GRAPHQLAPIIDOUTPUT
-	ENV
-	REGION
+  API_GRAPHQL_GRAPHQLAPIENDPOINTOUTPUT
+  API_GRAPHQL_GRAPHQLAPIIDOUTPUT
+  ENV
+  REGION
 Amplify Params - DO NOT EDIT */
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -71,12 +71,14 @@ app.post("/feeds/new", async function (req, res) {
           input: {
             link: req.body.link,
             name: feed.title,
-          },
+            featured: false
+          }
         },
       })).createFeed.id;
     }
     res.json(response);
-  } catch {
+  } catch (e) {
+    console.error(e);
     res.status(400).send();
   }
 });
@@ -87,19 +89,20 @@ app.post("/feeds/validate", async function (req, res) {
     res.json({
       name: feed.title,
     });
-  } catch {
+  } catch (e) {
+    console.error(e);
     res.status(400).send();
   }
 });
 
 app.post("/feeds/subscribe", async function (req, res) {
   if (admin.apps.length === 0) {
-    const secret = await secretsManager.getSecretValue({ SecretId:  `${process.env.ENV}/feed-alert/firebase` }).promise();
+    const secret = await secretsManager.getSecretValue({ SecretId: `${process.env.ENV}/feed-alert/firebase` }).promise();
     admin.initializeApp({
       credential: admin.credential.cert(JSON.parse(secret.SecretString))
     });
   }
-  const response = await (req.body.unsubscribe ? admin.messaging().subscribeToTopic(req.body.token, `feed-${req.body.id}`) : admin.messaging().unsubscribeFromTopic(req.body.token, `feed-${req.body.id}`));
+  const response = await (req.body.unsubscribe ? admin.messaging().unsubscribeFromTopic(req.body.token, `feed-${req.body.id}`) : admin.messaging().subscribeToTopic(req.body.token, `feed-${req.body.id}`));
 
   res.json({
     success: response.successCount > 0,

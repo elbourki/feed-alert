@@ -41,6 +41,7 @@ export const getFeed = /* GraphQL */ `
           title
           link
           html
+          snippet
           categories
           publishedAt
           createdAt
@@ -65,6 +66,7 @@ export const listItems = /* GraphQL */ `
         title
         link
         html
+        snippet
         categories
         publishedAt
         createdAt
@@ -91,6 +93,7 @@ export const getItem = /* GraphQL */ `
       title
       link
       html
+      snippet
       categories
       publishedAt
       createdAt
@@ -136,6 +139,7 @@ export const getUserFeed = /* GraphQL */ `
         title
         link
         html
+        snippet
         categories
         publishedAt
         createdAt
@@ -182,6 +186,7 @@ export const listUserFeeds = /* GraphQL */ `
           title
           link
           html
+          snippet
           categories
           publishedAt
           createdAt

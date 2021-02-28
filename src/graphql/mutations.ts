@@ -22,6 +22,7 @@ export const updateFeed = /* GraphQL */ `
           title
           link
           html
+          snippet
           categories
           publishedAt
           createdAt
@@ -52,6 +53,7 @@ export const deleteFeed = /* GraphQL */ `
           title
           link
           html
+          snippet
           categories
           publishedAt
           createdAt
@@ -74,6 +76,7 @@ export const updateItem = /* GraphQL */ `
       title
       link
       html
+      snippet
       categories
       publishedAt
       createdAt
@@ -104,6 +107,7 @@ export const deleteItem = /* GraphQL */ `
       title
       link
       html
+      snippet
       categories
       publishedAt
       createdAt
@@ -142,6 +146,7 @@ export const createFeed = /* GraphQL */ `
           title
           link
           html
+          snippet
           categories
           publishedAt
           createdAt
@@ -164,6 +169,7 @@ export const createItem = /* GraphQL */ `
       title
       link
       html
+      snippet
       categories
       publishedAt
       createdAt
@@ -212,6 +218,7 @@ export const createUserFeed = /* GraphQL */ `
         title
         link
         html
+        snippet
         categories
         publishedAt
         createdAt
@@ -259,6 +266,7 @@ export const updateUserFeed = /* GraphQL */ `
         title
         link
         html
+        snippet
         categories
         publishedAt
         createdAt
@@ -306,6 +314,7 @@ export const deleteUserFeed = /* GraphQL */ `
         title
         link
         html
+        snippet
         categories
         publishedAt
         createdAt

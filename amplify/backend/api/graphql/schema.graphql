@@ -30,7 +30,8 @@ type Item
   guid: String!
   title: String!
   link: AWSURL!
-  html: String!
+  html: String
+  snippet: String
   categories: AWSJSON!
   publishedAt: AWSDateTime!
 }

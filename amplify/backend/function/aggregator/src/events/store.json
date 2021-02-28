@@ -1,0 +1,8 @@
+{
+  "path": "/aggregator/store",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"item\":{\"title\":\"Women in Tech: Jess Dodson\",\"link\":\"https://townhall.hashnode.com/women-in-tech-jess-dodson\",\"publishedAt\":\"2020-09-18T08:08:34.000Z\",\"categories\":\"[\\\"General Programming\\\",\\\"Hashnode\\\",\\\"womenwhocode\\\"]\",\"guid\":\"https://townhall.hashnode.com/women-in-tech-jess-dodson\",\"snippet\":\"Today, we have Jess Dodson \\uD83D\\uDC69\u200d\\uD83D\\uDCBB, a Windows System administrator, currently working at Microsoft as a Customer Engineer in Identity & Security. Jess is big on passing on information to others that’s t\",\"html\":\"Today, we have Jess Dodson \\uD83D\\uDC69\u200d\\uD83D\\uDCBB, a Windows System administrator, currently working at Microsoft as a Customer Engineer in Identity & Security. Jess is big on passing on information to others that’s technically relevant, as well as passing on informa...\"},\"id\":\"b967fec6-bb60-444b-9a41-6776f47bf9d1\"}"
+}

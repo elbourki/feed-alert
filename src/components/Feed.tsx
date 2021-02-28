@@ -27,6 +27,7 @@ export default ({ feed, name = null }: FeedProps) => {
           boxSize="3"
           alt={feed.name}
           src={`https://www.google.com/s2/favicons?domain=` + hostname}
+          color="transparent"
         />
         <Text fontSize="xs" fontWeight="bold" ml="1" isTruncated>
           {hostname}

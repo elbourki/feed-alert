@@ -1,0 +1,137 @@
+{
+  "StartAt": "Retrieve Feed Queue",
+  "States": {
+    "Retrieve Feed Queue": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::apigateway:invoke",
+      "Parameters": {
+        "ApiEndpoint": "ljtg1rumql.execute-api.us-east-2.amazonaws.com",
+        "Method": "GET",
+        "Stage": "prod",
+        "Path": "aggregator/queue",
+        "AuthType": "IAM_ROLE"
+      },
+      "ResultSelector": {
+        "Feeds.$": "$.ResponseBody"
+      },
+      "Next": "Parse Feeds"
+    },
+    "Parse Feeds": {
+      "Type": "Map",
+      "InputPath": "$",
+      "ItemsPath": "$.Feeds",
+      "Parameters": {
+        "Feed.$": "$$.Map.Item.Value"
+      },
+      "MaxConcurrency": 0,
+      "Iterator": {
+        "StartAt": "Parse Feed",
+        "States": {
+          "Parse Feed": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::apigateway:invoke",
+            "Parameters": {
+              "ApiEndpoint": "ljtg1rumql.execute-api.us-east-2.amazonaws.com",
+              "Method": "POST",
+              "Stage": "prod",
+              "Path": "aggregator/parse",
+              "AuthType": "IAM_ROLE",
+              "Headers": {
+                "Content-Type": [
+                  "application/json"
+                ]
+              },
+              "RequestBody.$": "$.Feed"
+            },
+            "ResultSelector": {
+              "FeedID.$": "$.ResponseBody.id",
+              "Items.$": "$.ResponseBody.items"
+            },
+            "Next": "Are there items to process?"
+          },
+          "Are there items to process?": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "Variable": "$.Items[0]",
+                "IsPresent": true,
+                "Next": "Add Items"
+              }
+            ],
+            "Default": "Finish"
+          },
+          "Add Items": {
+            "Type": "Map",
+            "InputPath": "$",
+            "ItemsPath": "$.Items",
+            "Parameters": {
+              "FeedID.$": "$.FeedID",
+              "Item.$": "$$.Map.Item.Value"
+            },
+            "MaxConcurrency": 0,
+            "Iterator": {
+              "StartAt": "Store Feed Item",
+              "States": {
+                "Store Feed Item": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::apigateway:invoke",
+                  "Parameters": {
+                    "ApiEndpoint": "ljtg1rumql.execute-api.us-east-2.amazonaws.com",
+                    "Method": "POST",
+                    "Stage": "prod",
+                    "Path": "aggregator/store",
+                    "AuthType": "IAM_ROLE",
+                    "Headers": {
+                      "Content-Type": [
+                        "application/json"
+                      ]
+                    },
+                    "RequestBody": {
+                      "id.$": "$.FeedID",
+                      "item.$": "$.Item"
+                    }
+                  },
+                  "ResultSelector": {
+                    "title.$": "$.ResponseBody.title"
+                  },
+                  "End": true
+                }
+              }
+            },
+            "ResultPath": "$.ItemsResults",
+            "Next": "Send Push Notification"
+          },
+          "Send Push Notification": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::apigateway:invoke",
+            "Parameters": {
+              "ApiEndpoint": "ljtg1rumql.execute-api.us-east-2.amazonaws.com",
+              "Method": "POST",
+              "Stage": "prod",
+              "Path": "aggregator/notify",
+              "AuthType": "IAM_ROLE",
+              "Headers": {
+                "Content-Type": [
+                  "application/json"
+                ]
+              },
+              "RequestBody": {
+                "id.$": "$.FeedID",
+                "items.$": "$.ItemsResults"
+              }
+            },
+            "ResultSelector": {
+              "NotificationStatus.$": "$.ResponseBody"
+            },
+            "Next": "Finish"
+          },
+          "Finish": {
+            "Type": "Succeed"
+          }
+        }
+      },
+      "ResultPath": "$.FeedsResults",
+      "End": true
+    }
+  }
+}

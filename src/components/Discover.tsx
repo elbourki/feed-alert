@@ -22,7 +22,7 @@ export default () => {
       variables: {
         filter: {
           featured: {
-            eq: false,
+            eq: true,
           },
         },
       },

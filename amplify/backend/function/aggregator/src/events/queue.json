@@ -1,0 +1,4 @@
+{
+  "path": "/aggregator/queue",
+  "httpMethod": "GET"
+}

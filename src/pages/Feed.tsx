@@ -46,7 +46,7 @@ import { AuthContext } from "../auth-context";
 import useLocalStorageState from "use-local-storage-state";
 import firebase from "firebase/app";
 import config from "../config";
-import { API, Auth } from "aws-amplify";
+import { API } from "aws-amplify";
 
 interface SidebarProps {
   feed: Feed;
@@ -125,11 +125,6 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
             id: feed.id,
             token,
           },
-          headers: {
-            Authorization: `Bearer ${(await Auth.currentSession())
-              .getIdToken()
-              .getJwtToken()}`,
-          },
         }).then(() => {
           if (subscribed)
             setNotifications(
@@ -161,6 +156,7 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
             boxSize="3"
             alt={feed.name}
             src={`https://www.google.com/s2/favicons?domain=` + hostname}
+            color="transparent"
           />
           <Text fontSize="xs" fontWeight="bold" ml="1" isTruncated>
             {hostname}

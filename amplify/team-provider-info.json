@@ -18,7 +18,11 @@
       "function": {
         "feeds": {
           "deploymentBucketName": "amplify-feedalert-prod-131436-deployment",
-          "s3Key": "amplify-builds/feeds-614a526472586958482f-build.zip"
+          "s3Key": "amplify-builds/feeds-4f53666c5a696b473866-build.zip"
+        },
+        "aggregator": {
+          "deploymentBucketName": "amplify-feedalert-prod-131436-deployment",
+          "s3Key": "amplify-builds/aggregator-4461584654587a397238-build.zip"
         }
       }
     }

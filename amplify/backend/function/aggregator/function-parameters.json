@@ -1,0 +1,12 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "api": {
+      "graphql": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    }
+  }
+}

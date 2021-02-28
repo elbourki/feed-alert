@@ -1,0 +1,8 @@
+{
+  "path": "/aggregator/notify",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"id\":\"b967fec6-bb60-444b-9a41-6776f47bf9d1\",\"items\":[{\"title\":\"Women in Tech: Jess Dodson\"}]}"
+}
