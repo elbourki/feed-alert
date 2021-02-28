@@ -130,7 +130,14 @@ export const schema = {
                     "name": "html",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "snippet": {
+                    "name": "snippet",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
                     "attributes": []
                 },
                 "categories": {
@@ -154,6 +161,16 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "itemByGUID",
+                        "fields": [
+                            "guid"
+                        ],
+                        "queryField": "itemByGUID"
+                    }
                 },
                 {
                     "type": "key",
@@ -224,26 +241,6 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "lastReadItemID": {
-                    "name": "lastReadItemID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "lastReadItem": {
-                    "name": "lastReadItem",
-                    "isArray": false,
-                    "type": {
-                        "model": "Item"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id"
-                    }
                 }
             },
             "syncable": true,
@@ -277,5 +274,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "89442bc85a68f6c65d65bb980e11bd90"
+    "version": "d307f005acb44af7e52aa49c1120239a"
 };

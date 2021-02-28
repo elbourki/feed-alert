@@ -39,6 +39,7 @@ export default () => {
         status: "error",
         duration: null,
         isClosable: true,
+        position: "bottom-right",
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);

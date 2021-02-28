@@ -61,32 +61,23 @@ app.post("/aggregator/parse", async function (req, res) {
   res.json({
     id: req.body.id,
     items: (await asyncFilter(feed.items, async ({
-      guid
-    }) => {
-      return (await gateway.runQuery({
-        query: `query ListItems($filter: ModelItemFilterInput) {
-          listItems(filter: $filter) {
-            items {
-              id
-            }
-          }
-        }`,
-        operationName: "ListItems",
-        variables: {
-          filter: {
-            feedID: {
-              eq: req.body.id
-            },
-            guid: {
-              eq: guid
-            }
+      guid, link, isoDate
+    }) => (await gateway.runQuery({
+      query: `query ItemByGuid($guid: String) {
+        itemByGUID(guid: $guid) {
+          items {
+            id
           }
         }
-      })).listItems.items.length === 0;
-    })).map(({
-      isoDate: publishedAt,
-      contentSnippet: snippet,
-      content: html,
+      }`,
+      operationName: "ItemByGuid",
+      variables: {
+        guid: guid || link + isoDate
+      }
+    })).itemByGUID.items.length === 0)).map(({
+      isoDate,
+      contentSnippet,
+      content,
       categories,
       title,
       link,
@@ -94,11 +85,11 @@ app.post("/aggregator/parse", async function (req, res) {
     }) => ({
       title,
       link,
-      guid,
-      html,
-      publishedAt,
+      guid: guid || link + isoDate,
+      html: content,
+      publishedAt: isoDate,
       categories: JSON.stringify(categories) || '[]',
-      snippet: snippet.substring(0, 200)
+      snippet: contentSnippet ? contentSnippet.substring(0, 200) : null
     })),
   });
 });

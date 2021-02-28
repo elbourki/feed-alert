@@ -176,7 +176,6 @@ export const onCreateUserFeed = /* GraphQL */ `
       id
       feedID
       name
-      lastReadItemID
       createdAt
       updatedAt
       feed {
@@ -188,27 +187,6 @@ export const onCreateUserFeed = /* GraphQL */ `
         updatedAt
         items {
           nextToken
-        }
-      }
-      lastReadItem {
-        id
-        feedID
-        guid
-        title
-        link
-        html
-        snippet
-        categories
-        publishedAt
-        createdAt
-        updatedAt
-        feed {
-          id
-          name
-          link
-          featured
-          createdAt
-          updatedAt
         }
       }
       owner
@@ -221,7 +199,6 @@ export const onUpdateUserFeed = /* GraphQL */ `
       id
       feedID
       name
-      lastReadItemID
       createdAt
       updatedAt
       feed {
@@ -233,27 +210,6 @@ export const onUpdateUserFeed = /* GraphQL */ `
         updatedAt
         items {
           nextToken
-        }
-      }
-      lastReadItem {
-        id
-        feedID
-        guid
-        title
-        link
-        html
-        snippet
-        categories
-        publishedAt
-        createdAt
-        updatedAt
-        feed {
-          id
-          name
-          link
-          featured
-          createdAt
-          updatedAt
         }
       }
       owner
@@ -266,7 +222,6 @@ export const onDeleteUserFeed = /* GraphQL */ `
       id
       feedID
       name
-      lastReadItemID
       createdAt
       updatedAt
       feed {
@@ -278,27 +233,6 @@ export const onDeleteUserFeed = /* GraphQL */ `
         updatedAt
         items {
           nextToken
-        }
-      }
-      lastReadItem {
-        id
-        feedID
-        guid
-        title
-        link
-        html
-        snippet
-        categories
-        publishedAt
-        createdAt
-        updatedAt
-        feed {
-          id
-          name
-          link
-          featured
-          createdAt
-          updatedAt
         }
       }
       owner

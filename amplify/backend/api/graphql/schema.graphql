@@ -16,6 +16,7 @@ type Feed
 
 type Item
   @model
+  @key(name: "itemByGUID", fields: ["guid"], queryField: "itemByGUID")
   @key(name: "byItem", fields: ["feedID", "guid", "publishedAt"])
   @auth(
     rules: [
@@ -41,6 +42,4 @@ type UserFeed @model @auth(rules: [{ allow: owner }]) {
   feedID: ID!
   feed: Feed @connection(fields: ["feedID"])
   name: String
-  lastReadItemID: ID
-  lastReadItem: Item @connection(fields: ["lastReadItemID"])
 }

@@ -156,7 +156,14 @@ const App = () => {
         <AuthContext.Provider value={user}>
           <ApolloProvider client={client}>
             <AnimatePresence exitBeforeEnter={true} initial={false}>
-              <Switch location={location} key={location.pathname}>
+              <Switch
+                location={location}
+                key={
+                  location.pathname.startsWith("/feed")
+                    ? "feed"
+                    : location.pathname
+                }
+              >
                 <Route exact path="/" component={Home} />
                 <Route path="/feed/:feedID" component={Feed} />
                 <Route guest path="/join" component={Join} />

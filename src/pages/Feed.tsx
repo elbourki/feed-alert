@@ -6,7 +6,6 @@ import {
   Flex,
   Drawer,
   DrawerOverlay,
-  DrawerCloseButton,
   Text,
   DrawerBody,
   DrawerContent,
@@ -21,24 +20,39 @@ import {
   useToast,
   useColorModeValue,
   useColorMode,
+  LinkBox,
+  LinkOverlay,
+  Tag,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   HiArrowLeft,
   HiBell,
+  HiExternalLink,
+  HiLink,
   HiMenu,
   HiMinusSm,
   HiMoon,
   HiPlus,
   HiSun,
+  HiVolumeUp,
+  HiX,
 } from "react-icons/hi";
-import { Link, Route, Switch, useHistory, useParams } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Switch,
+  useHistory,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
 import {
   CreateUserFeedMutationVariables,
   DeleteUserFeedMutationVariables,
   Feed,
   GetFeedQueryVariables,
+  GetItemQueryVariables,
   ListUserFeedsQueryVariables,
   UserFeed,
 } from "../API";
@@ -47,6 +61,8 @@ import useLocalStorageState from "use-local-storage-state";
 import firebase from "firebase/app";
 import config from "../config";
 import { API } from "aws-amplify";
+import { Markup } from "interweave";
+import { formatRelative } from "date-fns";
 
 interface SidebarProps {
   feed: Feed;
@@ -58,6 +74,12 @@ interface SidebarProps {
 const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
   const toast = useToast();
   const history = useHistory();
+  const muted = useColorModeValue("gray.500", "gray.400");
+  const scrollbarTrack = useColorModeValue("gray.100", "dark.secondary");
+  const scrollbarThumb = useColorModeValue(
+    "gray.300",
+    "rgba(255, 255, 255, 0.25)"
+  );
   const [createUserFeed] = useMutation<any, CreateUserFeedMutationVariables>(
     gql`
       mutation CreateUserFeed($input: CreateUserFeedInput!) {
@@ -79,12 +101,12 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
   const user = useContext(AuthContext);
   const [togglingUserFeed, setTogglingUserFeed] = useState(false);
   const [togglingNotifications, setTogglingNotifications] = useState(false);
-
-  const hostname = new URL(feed.link as string).hostname;
   const [notifications, setNotifications] = useLocalStorageState<string[]>(
     "notifications",
     []
   );
+
+  const hostname = new URL(feed.link as string).hostname;
   const subscribed = notifications.includes(feed.id as string);
 
   const toggleUserFeed = () => {
@@ -143,14 +165,23 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
           status: "error",
           duration: 5000,
           isClosable: true,
+          position: "bottom-right",
         })
       )
       .finally(() => setTogglingNotifications(false));
   };
 
+  const items = feed.items?.items?.length
+    ? [...feed.items.items].sort(
+        (a, b) =>
+          new Date(b?.publishedAt as string).getTime() -
+          new Date(a?.publishedAt as string).getTime()
+      )
+    : null;
+
   return (
-    <Box>
-      <Box as="article" p="3" borderWidth="1px" rounded="md">
+    <Flex flexDir="column" w="100%" h="100%">
+      <Box p="3" borderWidth="1px" rounded="md">
         <Flex alignItems="center">
           <Image
             boxSize="3"
@@ -191,14 +222,238 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
           />
         </ButtonGroup>
       </Box>
-    </Box>
+      <Box
+        borderWidth="1px"
+        rounded="md"
+        flexGrow={1}
+        mt="2"
+        overflowY="auto"
+        sx={{
+          "&::-webkit-scrollbar": {
+            w: "2",
+          },
+          "&::-webkit-scrollbar-track": {
+            bg: scrollbarTrack,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            bg: scrollbarThumb,
+            borderRadius: "md",
+          },
+        }}
+      >
+        {items ? (
+          items.map((item) => (
+            <LinkBox
+              as="div"
+              key={item?.id}
+              borderBottomWidth="1px"
+              _last={{ borderBottomWidth: 0 }}
+            >
+              <Box p="3">
+                <Heading size="sm">
+                  <LinkOverlay as={Link} to={`/feed/${feed.id}/${item?.id}`}>
+                    {item?.title}
+                  </LinkOverlay>
+                </Heading>
+                <Text fontSize="sm" color={muted}>
+                  {formatRelative(
+                    new Date(item?.publishedAt as string),
+                    new Date()
+                  )}
+                </Text>
+                <Text
+                  lineHeight="1.3"
+                  mt="1"
+                  mb="1"
+                  noOfLines={3}
+                  fontSize="sm"
+                >
+                  {item?.snippet}
+                </Text>
+                <Flex flexWrap="wrap">
+                  {JSON.parse(item?.categories as string).map(
+                    (category: string, i: number) => (
+                      <Tag size="sm" key={i} variant="subtle" mt="1" mr="1">
+                        {category}
+                      </Tag>
+                    )
+                  )}
+                </Flex>
+              </Box>
+            </LinkBox>
+          ))
+        ) : (
+          <Flex
+            h="100%"
+            alignItems="center"
+            justifyContent="center"
+            p="2"
+            textAlign="center"
+          >
+            <Text fontWeight="bold" fontSize="sm">
+              No items yet, please check back later
+            </Text>
+          </Flex>
+        )}
+      </Box>
+    </Flex>
+  );
+};
+
+const Reader = () => {
+  const history = useHistory();
+  const toast = useToast();
+  const { url } = useRouteMatch();
+  const { itemID } = useParams<any>();
+  const scrollbarTrack = useColorModeValue("gray.100", "dark.secondary");
+  const scrollbarThumb = useColorModeValue(
+    "gray.300",
+    "rgba(255, 255, 255, 0.25)"
+  );
+  const { loading, error, data } = useQuery<any, GetItemQueryVariables>(
+    gql`
+      query GetItem($id: ID!) {
+        getItem(id: $id) {
+          id
+          title
+          link
+          html
+          categories
+          publishedAt
+        }
+      }
+    `,
+    {
+      variables: {
+        id: itemID,
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (!loading && (error || !data?.getItem)) {
+      toast({
+        title: "Couldn't load item",
+        description:
+          "Check your internet connection or try refreshing the page.",
+        status: "error",
+        duration: null,
+        isClosable: true,
+        position: "bottom-right",
+      });
+      history.push(url.replace(`/${itemID}`, ""));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, loading, data?.getItem]);
+
+  return loading || !data?.getItem ? (
+    <Flex h="100%" justifyContent="center" alignItems="center">
+      <Spinner />
+    </Flex>
+  ) : (
+    <>
+      <Helmet>
+        <title>{data.getItem.title}</title>
+      </Helmet>
+      <Box
+        overflowY="auto"
+        h="100%"
+        sx={{
+          "&::-webkit-scrollbar": {
+            w: "2",
+          },
+          "&::-webkit-scrollbar-track": {
+            bg: scrollbarTrack,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            bg: scrollbarThumb,
+            borderRadius: "md",
+          },
+        }}
+      >
+        <Flex
+          borderBottomWidth="1px"
+          position="absolute"
+          w="100%"
+          p="2"
+          alignItems="center"
+          top="0"
+          sx={{
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <Heading size="sm" isTruncated flexGrow={1} mr="2">
+            {data?.getItem.title}
+          </Heading>
+          <a target="_blank" rel="noreferrer" href={data?.getItem.link}>
+            <IconButton
+              aria-label="Open in a new tab"
+              variant="outline"
+              size="sm"
+              icon={<HiLink />}
+            />
+          </a>
+        </Flex>
+        {data?.getItem.html ? (
+          <Box
+            maxW="75ch"
+            mx="auto"
+            pt="14"
+            pb="14"
+            px="2"
+            sx={{
+              "& a": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            <Markup content={data?.getItem.html} />
+          </Box>
+        ) : (
+          <Flex
+            h="100%"
+            alignItems="center"
+            justifyContent="center"
+            p="2"
+            textAlign="center"
+          >
+            <Text fontWeight="bold" fontSize="sm">
+              This item has no content, please read on the original publisher's
+              site
+            </Text>
+          </Flex>
+        )}
+        <Flex
+          position="absolute"
+          bottom="0"
+          justifyContent="center"
+          w="100%"
+          p="2"
+        >
+          <a target="_blank" rel="noreferrer" href={data?.getItem.link}>
+            <Button leftIcon={<HiExternalLink />} size="sm" colorScheme="blue">
+              Read on {new URL(data?.getItem.link as string).hostname}
+            </Button>
+          </a>
+        </Flex>
+      </Box>
+    </>
   );
 };
 
 export default () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { feedID } = useParams<any>();
+  const { url } = useRouteMatch();
   const user = useContext(AuthContext);
+  const { isOpen, onOpen, onClose } = useDisclosure({
+    defaultIsOpen: true,
+  });
+  const drawer = useBreakpointValue({ base: true, md: false });
+  const history = useHistory();
+  const toast = useToast();
+  const mainBg = useColorModeValue("light.primary", "dark.primary");
+  const contentBg = useColorModeValue("light.secondary", "dark.secondary");
   const { loading, error, data } = useQuery<any, GetFeedQueryVariables>(
     gql`
       query GetFeed($id: ID!) {
@@ -206,6 +461,15 @@ export default () => {
           id
           name
           link
+          items {
+            items {
+              id
+              title
+              snippet
+              categories
+              publishedAt
+            }
+          }
         }
       }
     `,
@@ -213,6 +477,7 @@ export default () => {
       variables: {
         id: feedID,
       },
+      fetchPolicy: "cache-and-network",
     }
   );
   const {
@@ -227,7 +492,6 @@ export default () => {
             id
             feedID
             name
-            lastReadItemID
           }
         }
       }
@@ -242,10 +506,6 @@ export default () => {
       skip: !user,
     }
   );
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const drawer = useBreakpointValue({ base: true, md: false });
-  const toast = useToast();
-  const contentBg = useColorModeValue("light.secondary", "dark.secondary");
 
   const userFeed: UserFeed | null =
     user && !userFeedLoading && userFeedData.listUserFeeds.items.length
@@ -253,7 +513,7 @@ export default () => {
       : null;
 
   useEffect(() => {
-    if (error)
+    if (!loading && (error || !data?.getFeed)) {
       toast({
         title: "Couldn't load feed",
         description:
@@ -261,11 +521,14 @@ export default () => {
         status: "error",
         duration: null,
         isClosable: true,
+        position: "bottom-right",
       });
+      history.push("/");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+  }, [error, loading, data?.getFeed]);
 
-  const sidebar = !loading && (
+  const sidebar = !loading && data?.getFeed && (
     <Sidebar
       feed={data.getFeed}
       userFeed={userFeed}
@@ -273,7 +536,7 @@ export default () => {
     />
   );
 
-  return loading ? (
+  return loading || !data?.getFeed ? (
     <Flex minH="100vh" justifyContent="center" alignItems="center">
       <Spinner />
     </Flex>
@@ -283,7 +546,7 @@ export default () => {
         <title>{userFeed ? userFeed.name : data.getFeed.name}</title>
       </Helmet>
 
-      <Flex minH="100vh" py="2">
+      <Flex h="100vh" minH="300px" py="2">
         {drawer ? (
           <Drawer
             isOpen={isOpen}
@@ -292,14 +555,25 @@ export default () => {
             size="full"
           >
             <DrawerOverlay>
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerBody>{sidebar}</DrawerBody>
+              <DrawerContent bg={mainBg}>
+                {/* <DrawerCloseButton /> */}
+                <DrawerBody px="4">
+                  <Box position="absolute" top="1.25rem" right="1.75rem">
+                    <IconButton
+                      aria-label="Close menu"
+                      onClick={onClose}
+                      size="sm"
+                      variant="outline"
+                      icon={<HiX />}
+                    ></IconButton>
+                  </Box>
+                  {sidebar}
+                </DrawerBody>
               </DrawerContent>
             </DrawerOverlay>
           </Drawer>
         ) : (
-          <Box minW="xs" mr="2">
+          <Box w="xs" mr="2" flexShrink={0}>
             {sidebar}
           </Box>
         )}
@@ -335,10 +609,24 @@ export default () => {
             mt="2"
             bgColor={contentBg}
             flexGrow={1}
+            h="calc(100% - 2.5rem)"
+            position="relative"
           >
             <Switch>
-              <Route exact path="/"></Route>
-              <Route path="/:itemId"></Route>
+              <Route exact path={`${url}/`}>
+                <Flex
+                  h="100%"
+                  alignItems="center"
+                  justifyContent="center"
+                  p="2"
+                  textAlign="center"
+                >
+                  <Text fontWeight="bold" fontSize="sm">
+                    Choose a feed item to start reading
+                  </Text>
+                </Flex>
+              </Route>
+              <Route path={`${url}/:itemID`} component={Reader} />
             </Switch>
           </Box>
         </Box>

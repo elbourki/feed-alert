@@ -5,7 +5,7 @@ import theme from "@chakra-ui/theme";
 const customTheme = extendTheme({
   config: {
     initialColorMode: "dark",
-    useSystemColorMode: true,
+    useSystemColorMode: false,
   },
   fonts: {
     body: `"Source Sans Pro", ${theme.fonts.body}`,

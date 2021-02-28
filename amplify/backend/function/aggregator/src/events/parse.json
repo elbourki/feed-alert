@@ -1,0 +1,8 @@
+{
+  "path": "/aggregator/parse",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"id\":\"87519c66-ea78-4077-94d9-df79bce79244\",\"link\":\"https://news.ycombinator.com/rss\"}"
+}

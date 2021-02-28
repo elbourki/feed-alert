@@ -52,6 +52,34 @@ export const getFeed = /* GraphQL */ `
     }
   }
 `;
+export const getItem = /* GraphQL */ `
+  query GetItem($id: ID!) {
+    getItem(id: $id) {
+      id
+      feedID
+      guid
+      title
+      link
+      html
+      snippet
+      categories
+      publishedAt
+      createdAt
+      updatedAt
+      feed {
+        id
+        name
+        link
+        featured
+        createdAt
+        updatedAt
+        items {
+          nextToken
+        }
+      }
+    }
+  }
+`;
 export const listItems = /* GraphQL */ `
   query ListItems(
     $filter: ModelItemFilterInput
@@ -84,55 +112,22 @@ export const listItems = /* GraphQL */ `
     }
   }
 `;
-export const getItem = /* GraphQL */ `
-  query GetItem($id: ID!) {
-    getItem(id: $id) {
-      id
-      feedID
-      guid
-      title
-      link
-      html
-      snippet
-      categories
-      publishedAt
-      createdAt
-      updatedAt
-      feed {
-        id
-        name
-        link
-        featured
-        createdAt
-        updatedAt
-        items {
-          nextToken
-        }
-      }
-    }
-  }
-`;
-export const getUserFeed = /* GraphQL */ `
-  query GetUserFeed($id: ID!) {
-    getUserFeed(id: $id) {
-      id
-      feedID
-      name
-      lastReadItemID
-      createdAt
-      updatedAt
-      feed {
-        id
-        name
-        link
-        featured
-        createdAt
-        updatedAt
-        items {
-          nextToken
-        }
-      }
-      lastReadItem {
+export const itemByGuid = /* GraphQL */ `
+  query ItemByGuid(
+    $guid: String
+    $sortDirection: ModelSortDirection
+    $filter: ModelItemFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    itemByGUID(
+      guid: $guid
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
         id
         feedID
         guid
@@ -153,6 +148,29 @@ export const getUserFeed = /* GraphQL */ `
           updatedAt
         }
       }
+      nextToken
+    }
+  }
+`;
+export const getUserFeed = /* GraphQL */ `
+  query GetUserFeed($id: ID!) {
+    getUserFeed(id: $id) {
+      id
+      feedID
+      name
+      createdAt
+      updatedAt
+      feed {
+        id
+        name
+        link
+        featured
+        createdAt
+        updatedAt
+        items {
+          nextToken
+        }
+      }
       owner
     }
   }
@@ -168,7 +186,6 @@ export const listUserFeeds = /* GraphQL */ `
         id
         feedID
         name
-        lastReadItemID
         createdAt
         updatedAt
         feed {
@@ -176,19 +193,6 @@ export const listUserFeeds = /* GraphQL */ `
           name
           link
           featured
-          createdAt
-          updatedAt
-        }
-        lastReadItem {
-          id
-          feedID
-          guid
-          title
-          link
-          html
-          snippet
-          categories
-          publishedAt
           createdAt
           updatedAt
         }

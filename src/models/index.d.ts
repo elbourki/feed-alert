@@ -20,7 +20,8 @@ export declare class Item {
   readonly guid: string;
   readonly title: string;
   readonly link: string;
-  readonly html: string;
+  readonly html?: string;
+  readonly snippet?: string;
   readonly categories: string;
   readonly publishedAt: string;
   constructor(init: ModelInit<Item>);
@@ -31,8 +32,6 @@ export declare class UserFeed {
   readonly id: string;
   readonly feed?: Feed;
   readonly name?: string;
-  readonly lastReadItemID?: string;
-  readonly lastReadItem?: Item;
   constructor(init: ModelInit<UserFeed>);
   static copyOf(source: UserFeed, mutator: (draft: MutableModel<UserFeed>) => MutableModel<UserFeed> | void): UserFeed;
 }
