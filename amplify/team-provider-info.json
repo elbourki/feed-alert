@@ -22,7 +22,7 @@
         },
         "aggregator": {
           "deploymentBucketName": "amplify-feedalert-prod-131436-deployment",
-          "s3Key": "amplify-builds/aggregator-623268466f4774484257-build.zip"
+          "s3Key": "amplify-builds/aggregator-6763316f545836657a5a-build.zip"
         }
       }
     }

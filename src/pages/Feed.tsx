@@ -24,7 +24,7 @@ import {
   LinkOverlay,
   Tag,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   HiArrowLeft,
@@ -34,6 +34,7 @@ import {
   HiMenu,
   HiMinusSm,
   HiMoon,
+  HiOutlinePause,
   HiPlus,
   HiSun,
   HiVolumeUp,
@@ -60,7 +61,7 @@ import { AuthContext } from "../auth-context";
 import useLocalStorageState from "use-local-storage-state";
 import firebase from "firebase/app";
 import config from "../config";
-import { API } from "aws-amplify";
+import { API, Predictions } from "aws-amplify";
 import { Markup } from "interweave";
 import { formatRelative } from "date-fns";
 
@@ -303,8 +304,15 @@ const Sidebar = ({ feed, name, userFeed, refetch }: SidebarProps) => {
 const Reader = () => {
   const history = useHistory();
   const toast = useToast();
+  const [content, setContent] = useState("");
+  const [audio, setAudio] = useState<any>(null);
+  const [loadingAudio, setLoadingAudio] = useState(false);
   const { url } = useRouteMatch();
   const { itemID } = useParams<any>();
+  const headerBg = useColorModeValue(
+    "rgba(255, 255, 255, 0.75)",
+    "rgba(36, 36, 36, 0.5)"
+  );
   const scrollbarTrack = useColorModeValue("gray.100", "dark.secondary");
   const scrollbarThumb = useColorModeValue(
     "gray.300",
@@ -346,6 +354,49 @@ const Reader = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, loading, data?.getItem]);
 
+  const contentRef = useCallback(
+    (node) => {
+      if (node !== null) setContent(node.textContent);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [itemID]
+  );
+
+  const listen = () => {
+    setLoadingAudio(true);
+    Predictions.convert({
+      textToSpeech: {
+        source: {
+          text: content,
+        },
+      },
+    })
+      .then(({ speech: { url } }) => {
+        const audio = new Audio(url);
+        audio.addEventListener("ended", () => {
+          setAudio(null);
+        });
+        audio.play();
+        setAudio(audio);
+      })
+      .catch(() =>
+        toast({
+          title: "Couldn't load audio",
+          description: "Check your internet connection or try again later.",
+          status: "error",
+          duration: null,
+          isClosable: true,
+          position: "bottom-right",
+        })
+      )
+      .finally(() => setLoadingAudio(false));
+  };
+
+  const pause = () => {
+    audio.pause();
+    setAudio(null);
+  };
+
   return loading || !data?.getItem ? (
     <Flex h="100%" justifyContent="center" alignItems="center">
       <Spinner />
@@ -380,11 +431,23 @@ const Reader = () => {
           top="0"
           sx={{
             backdropFilter: "blur(10px)",
+            background: headerBg,
           }}
         >
           <Heading size="sm" isTruncated flexGrow={1} mr="2">
             {data?.getItem.title}
           </Heading>
+          {data?.getItem.html && content.length <= 3000 && (
+            <IconButton
+              isLoading={loadingAudio}
+              aria-label="Listen to the audio version"
+              variant="outline"
+              size="sm"
+              mr="2"
+              onClick={audio ? pause : listen}
+              icon={audio ? <HiOutlinePause /> : <HiVolumeUp />}
+            />
+          )}
           <a target="_blank" rel="noreferrer" href={data?.getItem.link}>
             <IconButton
               aria-label="Open in a new tab"
@@ -396,6 +459,7 @@ const Reader = () => {
         </Flex>
         {data?.getItem.html ? (
           <Box
+            ref={contentRef}
             maxW="75ch"
             mx="auto"
             pt="14"
@@ -404,6 +468,12 @@ const Reader = () => {
             sx={{
               "& a": {
                 textDecoration: "underline",
+              },
+              "& .feedflare": {
+                display: "none",
+              },
+              "& pre": {
+                overflowX: "auto",
               },
             }}
           >
@@ -508,7 +578,10 @@ export default () => {
   );
 
   const userFeed: UserFeed | null =
-    user && !userFeedLoading && userFeedData.listUserFeeds.items.length
+    user &&
+    !userFeedLoading &&
+    userFeedData &&
+    userFeedData.listUserFeeds.items.length
       ? userFeedData.listUserFeeds.items[0]
       : null;
 

@@ -11,8 +11,10 @@ import awsconfig from "./aws-exports";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import customTheme from "./theme";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { AmazonAIPredictionsProvider } from "@aws-amplify/predictions";
 
 Amplify.configure(awsconfig);
+Amplify.addPluggable(new AmazonAIPredictionsProvider());
 firebase.initializeApp(config.firebase);
 serviceWorkerRegistration.register();
 

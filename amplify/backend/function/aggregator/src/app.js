@@ -82,15 +82,16 @@ app.post("/aggregator/parse", async function (req, res) {
       title,
       link,
       guid,
+      'content:encoded': html
     }) => ({
       title,
       link,
       guid: guid || link + isoDate,
-      html: content,
+      html: html || content,
       publishedAt: isoDate,
       categories: JSON.stringify(categories) || '[]',
       snippet: contentSnippet ? contentSnippet.substring(0, 200) : null
-    })),
+    })).slice(0, 10),
   });
 });
 
